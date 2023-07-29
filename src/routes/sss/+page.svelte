@@ -7,7 +7,7 @@
 	import { onMount } from 'svelte';
 
 /**
-   * @type {null}
+   * @type {any}
    */
 let data = null;
 
@@ -39,6 +39,16 @@ onMount(() => {
 	  </div>
 	<div class="w-full flex flex-col justify-center">
 		<h1 class="font-medium text-blue-500">SSS PAYLOAD</h1>
+		{#if data}
+			<p>n = {data.n}</p>
+			<p>k = {data.k}</p>
+			<p>p = {Number('0x' + data.shares[0].value.prime)}</p>
+			{#each {length: data.shares.length} as _, i}
+				<div>
+					<p>Share for Index {i} = {Number('0x' + data.shares[i].value.value)}</p>
+				</div>
+			{/each}
+		{/if}
 		<div>
 			<label for="name">Secret</label>
 			<input
@@ -50,9 +60,6 @@ onMount(() => {
 			/>
 		</div>
 		<div>
-			{#if data}
-			<h1> hi </h1>
-			{/if}
 		</div>
 	</div>
 </section>
