@@ -2,8 +2,8 @@
   import { sssShares, sssVerify } from "../../api";
   import { onMount } from "svelte";
 
-  /**
-   * @type any
+/**
+   * @type {any}
    */
   let data = null;
   let secret = "";
