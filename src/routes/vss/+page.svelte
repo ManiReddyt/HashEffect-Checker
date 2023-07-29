@@ -1,26 +1,57 @@
-<svelte:head>
-	<title>About</title>
-	<meta name="description" content="About this app" />
-</svelte:head>
+<script>
+  import { sssShares, sssVerify } from "../../api";
+  import { onMount } from "svelte";
 
-<div class="text-column">
-	<h1>About this app</h1>
+  /**
+   * @type any
+   */
+  let data = null;
+  let secret = "";
+  let status = "Submit";
+  onMount(async function () {
+    try {
+      const response = await fetch(sssShares);
+      data = await response.json();
+      console.log("data : ", data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  });
 
-	<p>
-		This is a <a href="https://kit.svelte.dev">SvelteKit</a> app. You can make your own by typing the
-		following into your command line and following the prompts:
-	</p>
+  async function submitSecret() {
+    try {
+      console.log("Object: ", { shares: data.shares, secret: secret });
+      const response = await fetch(sssVerify, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ shares: data.shares, secret: secret }),
+      });
+      const res = await response.json();
+      status = res.status;
+      console.log("res : ", res);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+</script>
 
-	<pre>npm create svelte@latest</pre>
-
-	<p>
-		The page you're looking at is purely static HTML, with no client-side interactivity needed.
-		Because of that, we don't need to load any JavaScript. Try viewing the page's source, or opening
-		the devtools network panel and reloading.
-	</p>
-
-	<p>
-		The <a href="/sverdle">Sverdle</a> page illustrates SvelteKit's data loading and form handling. Try
-		using it with JavaScript disabled!
-	</p>
+<div>
+  <div class="text-center text-3xl font-bold">SSS VERIFICATION</div>
+  {#if data}
+    <div>K={data.k}</div>
+    <div>N={data.n}</div>
+    <div>Prime={data.shares[0].value.prime}</div>
+    {#each data.shares as share, index}
+      <div>Share {index} : {Number("0x" + share.value.value)}</div>{/each}
+    <input
+      bind:value={secret}
+      placeholder="enter your secret"
+      class="bg-gray-100"
+    />
+    <button on:click={submitSecret}>{status}</button>
+  {:else}
+    <div>Loading...</div>
+  {/if}
 </div>
