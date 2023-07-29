@@ -2,8 +2,8 @@
   import { sssShares, sssVerify } from "../../api";
   import { onMount } from "svelte";
 
-  /**
-   * @type any
+/**
+   * @type {any}
    */
   let data = null;
   let secret = "";
@@ -40,17 +40,37 @@
 <div>
   <div class="text-center text-3xl font-bold">SSS VERIFICATION</div>
   {#if data}
-    <div>K={data.k}</div>
-    <div>N={data.n}</div>
-    <div>Prime={data.shares[0].value.prime}</div>
-    {#each data.shares as share, index}
-      <div>Share {index} : {Number("0x" + share.value.value)}</div>{/each}
-    <input
-      bind:value={secret}
-      placeholder="enter your secret"
-      class="bg-gray-100"
-    />
-    <button on:click={submitSecret}>{status}</button>
+    
+
+    <table class="flex justify-center mt-5">
+      <tbody class="border bg-slate-100 px-2">
+        <tr class="space-x-2">
+          <td class="w-[1/2] text-center pr-4 ">K</td>
+          <td class="w-1/2 text-left pl-4">{data.k}</td>
+        </tr>
+        <tr class="">
+          <td class="w-[1/2] text-center pr-4">N</td>
+          <td class="w-1/2 text-left pl-4">{data.n}</td>
+        </tr>
+        {#each data.shares as share, index}
+          <tr>
+            <td class="w-[1/2] text-right pr-4">Share {index}</td>
+            <td class="w-1/2 text-left pl-4">{Number("0x" + share.value.value)}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+	<div class="flex justify-center mt-5">
+		<input
+		  bind:value={secret}
+		  placeholder="Enter your secret"
+		  class="border bg-gray-100"
+		/>
+	</div>
+	<div class="flex justify-center mt-5">
+
+		<button class="bg-blue-500 px-1" on:click={submitSecret}>{status}</button>
+	</div>
   {:else}
     <div>Loading...</div>
   {/if}
